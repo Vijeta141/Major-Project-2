@@ -54,10 +54,10 @@ cluster.fit_predict(movie_genre)
 ask = random.sample(item, 10)
 new_user = np.zeros(19)
 
-print "Provie age,sex and occupation in order"
-s=input()
-s=s.split(' ')
-user.append(User(944, int(s[0]),s[1],s[2],110019))
+#print "Provie age,sex and occupation in order"
+#s=input()
+#s=s.split(' ')
+user.append(User(944,20,"M","Student",110019))
 
 print "Please rate the following movies (1-5):"
 
@@ -92,7 +92,7 @@ top_5 = top_5[:5]
 top_5_genre = []
 
 for i in range(0, 5):
-	print top_5[i],user[int(top_5[i])].age,user[int(top_5[i])].sex,user[int(top_5[i])].occupation
+	print user[int(top_5[i])].age,user[int(top_5[i])].sex,user[int(top_5[i])].occupation
 	maxi = 0
 	maxe = 0
 	for j in range(0, 19):
