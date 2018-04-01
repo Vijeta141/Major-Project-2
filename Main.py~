@@ -156,4 +156,6 @@ plt.show() #boom
 plt.pcolormesh(utility_copy)
 plt.colorbar() #need a colorbar to show the intensity scale
 plt.show() #boom
-
+yield{
+    "bowler": response.css('div.scorecard-section.bowling td a[data-reactid]::text').extract()
+}
