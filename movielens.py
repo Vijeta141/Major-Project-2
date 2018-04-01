@@ -55,8 +55,10 @@ class Rating:
 # The dataset class helps you to load files and create User, Item and Rating objects
 class Dataset:
     def load_users(self, file, u):
-        f = open(file, "r")
+        f = open(file,encoding = "ISO-8859-1")
+
         text = f.read()
+        # text.encode("utf-8").decode()
         entries = re.split("\n+", text)
         for entry in entries:
             e = entry.split('|', 5)
@@ -65,8 +67,9 @@ class Dataset:
         f.close()
 
     def load_items(self, file, i):
-        f = open(file, "r")
+        f = open(file,encoding = "ISO-8859-1")
         text = f.read()
+
         entries = re.split("\n+", text)
         for entry in entries:
             e = entry.split('|', 24)

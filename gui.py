@@ -59,10 +59,10 @@ new_user = np.zeros(19)
 #s=s.split(' ')
 user.append(User(944,20,"M","Student",110019))
 
-print "Please rate the following movies (1-5):"
+print ("Please rate the following movies (1-5):)")
 
 for movie in ask:
-	print movie.title + ": "
+	print (movie.title + ": ")
 	a = int(input())
 	if new_user[cluster.labels_[movie.id - 1]] != 0:
 		new_user[cluster.labels_[movie.id - 1]] = (new_user[cluster.labels_[movie.id - 1]] + a) / 2
@@ -75,7 +75,7 @@ utility_new = np.vstack((utility_matrix, new_user))
 
 pcs_matrix = np.zeros(n_users)
 
-print "Finding users which have similar preferences."
+print ("Finding users which have similar preferences.")
 for i in range(0, n_users + 1):
     if i != 943:
         pcs_matrix[i] = pcs(944, i + 1, utility_new)
@@ -92,7 +92,7 @@ top_5 = top_5[:5]
 top_5_genre = []
 
 for i in range(0, 5):
-	print user[int(top_5[i])].age,user[int(top_5[i])].sex,user[int(top_5[i])].occupation
+	print (user[int(top_5[i])].age,user[int(top_5[i])].sex,user[int(top_5[i])].occupation)
 	maxi = 0
 	maxe = 0
 	for j in range(0, 19):
@@ -101,44 +101,44 @@ for i in range(0, 5):
 			maxi = j
 	top_5_genre.append(maxi)
 
-print "Movie genres you'd like:"
+print ("Movie genres you'd like:")
 
 for i in top_5_genre:
 	if i == 0:
-		print "unknown"
+		print ("unknown")
 	elif i == 1:
-		print "action"
+		print ("action")
 	elif i == 2:
-		print "adventure"
+		print ("adventure")
 	elif i == 3:
-		print "animation"
+		print ("animation")
 	elif i == 4:
-		print "childrens"
+		print ("childrens")
 	elif i == 5:
-		print "comedy"
+		print ("comedy")
 	elif i == 6:
-		print "crime"
+		print ("crime")
 	elif i == 7:
-		print "documentary"
+		print ("documentary")
 	elif i == 8:
-		print "drama"
+		print ("drama")
 	elif i == 9:
-		print "fantasy"
+		print ("fantasy")
 	elif i == 10:
-		print "film_noir"
+		print ("film_noir")
 	elif i == 11:
-		print "horror"
+		print ("horror")
 	elif i == 12:
-		print "musical"
+		print ("musical")
 	elif i == 13:
-		print "mystery"
+		print ("mystery")
 	elif i == 14:
-		print "romance"
+		print ("romance")
 	elif i == 15:
-		print "science fiction"
+		print ("science fiction")
 	elif i == 16:
-		print "thriller"
+		print ("thriller")
 	elif i == 17:
-		print "war"
+		print ("war")
 	else:
-		print "western"
+		print ("western")
