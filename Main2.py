@@ -4,13 +4,17 @@ from sklearn.metrics import mean_squared_error
 from sklearn.cluster import KMeans
 import sys
 import time
+import random
+import math
+import operator
 import pickle
 user = []
 item = []
 rating = []
 rating_test = []
+import skfuzzy as fuzz
+import matplotlib.pyplot as plt
 
-# Load the movie lens dataset into arrays
 d = Dataset()
 d.load_users("data/u10.user", user)
 d.load_items("data/u.item", item)
@@ -19,6 +23,7 @@ d.load_ratings("data/u10.test", rating_test)
 
 n_users = len(user)
 n_items = len(item)
+
 utility = np.zeros((n_users, n_items))
 for r in rating:
     utility[r.user_id-1][r.item_id-1] = r.rating
@@ -43,9 +48,11 @@ for movie in item:
                         movie.musical, movie.mystery, movie.romance, movie.sci_fi, movie.thriller, movie.war, movie.western])
 
 movie_genre = np.array(movie_genre)
-cluster = KMeans(n_clusters=19)
-cluster.fit_predict(movie_genre) #Compute cluster centers and predict cluster index for each sample movie.
-# print (cluster.labels_)
+movie_genre = np.transpose(movie_genre)
+cntr, u_orig, _, _, _, _, _ = fuzz.cluster.cmeans(movie_genre, 19, 2, error=0.005, maxiter=300)
+labels = list(np.argmax(u_orig, axis=0) + 1)
+
+
 utility_clustered = []
 for i in range(0, n_users):
     average = np.zeros(19)
@@ -54,7 +61,7 @@ for i in range(0, n_users):
         tmp.append([])
     for j in range(0, n_items):
         if utility[i][j] != 0:
-            tmp[cluster.labels_[j] - 1].append(utility[i][j])#find the cluster of each movie the user has rated and append the rating
+            tmp[labels[j] - 1].append(utility[i][j])#find the cluster of each movie the user has rated and append the rating
     for m in range(0, 19):
         if len(tmp[m]) != 0:
             average[m] = np.mean(tmp[m])
@@ -93,9 +100,6 @@ for i in range(0, n_users):
             time.sleep(0.00005)
 print ("\rGenerating Similarity Matrix [%d:%d] = %f" % (i+1, j+1, pcs_matrix[i][j]))
 
-# print (pcs_matrix)
-# Guesses the ratings that user with id, user_id, might give to item with id, i_id.
-# We will consider the top_n similar users to do this.
 def norm():
     normalize = np.zeros((n_users, 19))
     for i in range(0, n_users):
@@ -138,28 +142,15 @@ for i in range(0, n_users):
             utility_copy[i][j] = guess(i+1, j+1, 150)
 print ("\rGuessing [User:Rating] = [%d:%d]" % (i, j))
 pickle.dump( utility_copy, open("utility_matrix.pkl", "wb"))
-# Predict ratings for u.test and find the mean squared error
 y_true = []
 y_pred = []
 f = open('test.txt', 'w')
 for i in range(0, n_users):
     for j in range(0, n_items):
         if test[i][j] > 0:
-            f.write("%d, %d, %.4f\n" % (i+1, j+1, utility_copy[i][cluster.labels_[j]-1]))
+            f.write("%d, %d, %.4f\n" % (i+1, j+1, utility_copy[i][labels[j]-1]))
             y_true.append(test[i][j])
-            y_pred.append(utility_copy[i][cluster.labels_[j]-1])
+            y_pred.append(utility_copy[i][labels[j]-1])
 f.close()
 
 print ("Mean Squared Error: %f" % mean_squared_error(y_true, y_pred))
-# print (pcs_matrix)
-# # %matplotlib inline%
-# import matplotlib.pyplot as plt
-# import numpy as np
-# #x, y = np.meshgrid(x, y)
-# plt.pcolormesh(pcs_matrix)
-# plt.colorbar() #need a colorbar to show the intensity scale
-# plt.show() #boom
-# plt.pcolormesh(utility_copy)
-# plt.colorbar() #need a colorbar to show the intensity scale
-# plt.show() #boom
-
