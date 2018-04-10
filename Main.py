@@ -62,11 +62,11 @@ for i in range(0, n_users):
             average[m] = 0
     utility_clustered.append(average)
 
-utility_clustered = np.array(utility_clustered)
+utility_clustered = np.array(utility_clustered)#stores average ratig of each cluster of all users
 print (utility_clustered)
 for i in range(0, n_users):
     x = utility_clustered[i]
-    user[i].avg_r = sum(a for a in x if a > 0) / sum(a > 0 for a in x)
+    user[i].avg_r = sum(a for a in x if a > 0) / sum(a > 0 for a in x)#final average rating of each user
 
 def pcs(x, y):
     num = 0
@@ -83,7 +83,7 @@ def pcs(x, y):
     else:
         return num / den
 
-pcs_matrix = np.zeros((n_users, n_users))
+pcs_matrix = np.zeros((n_users, n_users))#Pearson Correlation Similarity
 for i in range(0, n_users):
     for j in range(0, n_users):
         if i!=j:
@@ -135,7 +135,7 @@ for i in range(0, n_users):
             sys.stdout.write("\rGuessing [User:Rating] = [%d:%d]" % (i, j))
             sys.stdout.flush()
             time.sleep(0.00005)
-            utility_copy[i][j] = guess(i+1, j+1, 150)
+            utility_copy[i][j] = guess(i+1, j+1, 5)
 print ("\rGuessing [User:Rating] = [%d:%d]" % (i, j))
 pickle.dump( utility_copy, open("utility_matrix.pkl", "wb"))
 # Predict ratings for u.test and find the mean squared error
