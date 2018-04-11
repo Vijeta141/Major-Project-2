@@ -4,12 +4,16 @@ from sklearn.metrics import mean_squared_error
 from sklearn.cluster import KMeans
 import sys
 import time
+import random
+import math
+import operator
 import pickle
 user = []
 item = []
 rating = []
 rating_test = []
-
+import skfuzzy as fuzz
+import matplotlib.pyplot as plt
 # Load the movie lens dataset into arrays
 d = Dataset()
 d.load_users("data/u10.user", user)
@@ -34,40 +38,40 @@ for i in range(n_users):
     else:
         user[i].avg_r = 0.
 
-# print (utility)
+
 test = np.zeros((n_users, n_items))
 for r in rating_test:
     test[r.user_id - 1][r.item_id - 1] = r.rating
 
-cluster = KMeans(n_clusters=5)
-cluster.fit_predict(utility)
+utility_transposed = np.transpose(utility)
+cntr, u_orig, _, _, _, _, _ = fuzz.cluster.cmeans(utility_transposed, 5, 2, error=0.005, maxiter=300)
+labels = list(np.argmax(u_orig, axis=0) + 1)
 
-# print (cluster.labels_)
 utility_copy = np.copy(utility)
 def predict(user_id,item_id):
-	cluster_number = cluster.labels_[user_id]
-	c = []
-	for i in range(0,n_users):
-		if(cluster.labels_[i] == cluster_number):
-		  c.append(i)
+    cluster_number = labels[user_id]
+    c = []
+    for i in range(0,n_users):
+        if(labels[i] == cluster_number):
+          c.append(i)
 
-	y = []
-	for user in c:
-	    x = utility[user][item_id]
-	    y.append(x)
+    y = []
+    for user in c:
+        x = utility[user][item_id]
+        y.append(x)
 
-	max_r = max(y,key=y.count)
+    max_r = max(y,key=y.count)
 
-	if max_r == 0.0:
-		y = list(filter((0.0).__ne__, y))
-		if len(y) == 0:
-			return 0.0
-		else:
-			max_r = max(y,key=y.count)
+    if max_r == 0.0:
+        y = list(filter((0.0).__ne__, y))
+        if len(y) == 0:
+            return 0.0
+        else:
+            max_r = max(y,key=y.count)
 
-	# print (y)
+    # print (y)
 
-	return max_r
+    return max_r
 
 
 for i in range(0,n_users):
@@ -94,4 +98,3 @@ f.close()
 # print (y_pred)
 
 print ("Mean Squared Error: %f" % mean_squared_error(y_true, y_pred))
-#  6
