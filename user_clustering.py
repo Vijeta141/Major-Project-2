@@ -39,35 +39,29 @@ test = np.zeros((n_users, n_items))
 for r in rating_test:
     test[r.user_id - 1][r.item_id - 1] = r.rating
 
-cluster = KMeans(n_clusters=5)
+cluster = KMeans(n_clusters=6)
 cluster.fit_predict(utility)
 
 # print (cluster.labels_)
 utility_copy = np.copy(utility)
 def predict(user_id,item_id):
-	cluster_number = cluster.labels_[user_id]
-	c = []
-	for i in range(0,n_users):
-		if(cluster.labels_[i] == cluster_number):
-		  c.append(i)
+    cluster_number = cluster.labels_[user_id]
 
-	y = []
-	for user in c:
-	    x = utility[user][item_id]
-	    y.append(x)
+    indices = [i for i, x in enumerate(cluster.labels_) if x == cluster_number]
 
-	max_r = max(y,key=y.count)
+    y = []
+    for user in indices:
+        x = utility[user][item_id]
+        y.append(x)
 
-	if max_r == 0.0:
-		y = list(filter((0.0).__ne__, y))
-		if len(y) == 0:
-			return 0.0
-		else:
-			max_r = max(y,key=y.count)
+    y = list(filter((0.0).__ne__, y))
 
-	# print (y)
+    if len(y) == 0:
+        return 0.0
+    else:
+        max_r = max(y,key=y.count)
 
-	return max_r
+    return max_r
 
 
 for i in range(0,n_users):

@@ -44,34 +44,29 @@ for r in rating_test:
     test[r.user_id - 1][r.item_id - 1] = r.rating
 
 utility_transposed = np.transpose(utility)
-cntr, u_orig, _, _, _, _, _ = fuzz.cluster.cmeans(utility_transposed, 5, 2, error=0.005, maxiter=300)
+cntr, u_orig, _, _, _, _, _ = fuzz.cluster.cmeans(utility_transposed, 6, 2, error=0.005, maxiter=300)
 labels = list(np.argmax(u_orig, axis=0) + 1)
 
 utility_copy = np.copy(utility)
 def predict(user_id,item_id):
     cluster_number = labels[user_id]
-    c = []
-    for i in range(0,n_users):
-        if(labels[i] == cluster_number):
-          c.append(i)
+
+    indices = [i for i, x in enumerate(labels) if x == cluster_number]
 
     y = []
-    for user in c:
+    for user in indices:
         x = utility[user][item_id]
         y.append(x)
 
-    max_r = max(y,key=y.count)
+    y = list(filter((0.0).__ne__, y))
 
-    if max_r == 0.0:
-        y = list(filter((0.0).__ne__, y))
-        if len(y) == 0:
-            return 0.0
-        else:
-            max_r = max(y,key=y.count)
-
-    # print (y)
+    if len(y) == 0:
+        return 0.0
+    else:
+        max_r = max(y,key=y.count)
 
     return max_r
+
 
 
 for i in range(0,n_users):
