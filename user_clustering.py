@@ -66,10 +66,13 @@ def predict(user_id,item_id):
 distance = {}
 ratings = [1.0,2.0,3.0,4.0,5.0]
 def predict_weighted(user_id,item_id):
+    cluster_number = cluster.labels_[user_id]
+
+    indices = [i for i, x in enumerate(cluster.labels_) if x == cluster_number]
     scores = [0,0,0,0,0]
 
     for i in indices:
-        if not distance[i]:
+        if not 'i' in distance :
             sum_d = sum((utility[user_id][j] - utility[i][j]) for j in range(0,n_items))
         #     sum_f = sum_d ** 0.5
             lamb = 1/ (sum_d ** 2)
