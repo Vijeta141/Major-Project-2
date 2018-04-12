@@ -67,7 +67,24 @@ def predict(user_id,item_id):
 
     return max_r
 
+distance = {}
+ratings = [1.0,2.0,3.0,4.0,5.0]
+def predict_weighted(user_id,item_id):
+    scores = [0,0,0,0,0]
 
+    for i in indices:
+        if not distance[i]:
+            sum_d = sum((utility[user_id][j] - utility[i][j]) for j in range(0,n_items))
+        #     sum_f = sum_d ** 0.5
+            lamb = 1/ (sum_d ** 2)
+            distance[i] = lamb
+    for j in ratings:
+            for i in indices:
+                if utility[i][item_id] == j:
+                    scores[int(j-1)]+=distance[i]
+    max_s = max(scores)
+
+    return float(scores.index(max_s) + 1)
 
 for i in range(0,n_users):
   for j in range(0,n_items):
