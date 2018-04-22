@@ -185,7 +185,7 @@ def predict_user_rating():
                 time.sleep(0.00005)
                 user_rating_copy[i][j] = guess(i+1, j+1, 150)
 
-    pickle.dump( user_rating_copy, open("user_rating_matrix.pkl", "wb"))
+    pickle.dump( user_rating_copy, open("user_rating_matrix_fuzzy_cmeans.pkl", "wb"))
     
     return user_rating_copy
 
@@ -197,12 +197,12 @@ def create_test_matrix():
 
     return test
 
-def calculate_error(test, predicted_rating,cluster):
+def calculate_error(test, predicted_rating, labels):
     # Predict ratings for u.test and find the mean squared error
     y_true = []
     y_pred = []
     
-    f = open('test.txt', 'w')
+    f = open('test_movie_fuzzy.txt', 'w')
     
     for i in range(0, n_users):
         for j in range(0, n_items):
@@ -214,20 +214,20 @@ def calculate_error(test, predicted_rating,cluster):
 
     print ("Mean Squared Error: %f" % mean_squared_error(y_true, y_pred))
 
-def test_model(predicted_rating,cluster):
+def test_model(predicted_rating, labels):
     test_matrix = create_test_matrix()
-    calculate_error(test_matrix, predicted_rating, cluster)
+    calculate_error(test_matrix, predicted_rating, labels)
 
 def main():
     load_data()
     user_rating = []
     user_rating = create_rating_matrix()
     find_avg_rating_per_user(user_rating)
-    cluster = cluster_movies()
-    update_avg_rating(user_rating, cluster)
+    labels = cluster_movies()
+    update_avg_rating(user_rating, labels)
     find_similarity_matrix()
     predicted_rating = predict_user_rating()
-    test_model(predicted_rating,cluster)
+    test_model(predicted_rating,labels)
 
 if __name__ == '__main__':
     main()

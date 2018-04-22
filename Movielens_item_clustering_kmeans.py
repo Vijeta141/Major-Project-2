@@ -105,7 +105,7 @@ def pcs(x, y):
     num = 0
     den1 = 0
     den2 = 0
-    
+
     A = avg_rating_per_cluster[x - 1]
     B = avg_rating_per_cluster[y - 1]
     
@@ -186,7 +186,7 @@ def predict_user_rating():
                 time.sleep(0.00005)
                 user_rating_copy[i][j] = guess(i+1, j+1, 5)
 
-    pickle.dump( user_rating_copy, open("user_rating_matrix.pkl", "wb"))
+    pickle.dump( user_rating_copy, open("user_rating_matrix_kmeans.pkl", "wb"))
     
     return user_rating_copy
 
@@ -203,7 +203,7 @@ def calculate_error(test, predicted_rating,cluster):
     y_true = []
     y_pred = []
     
-    f = open('test.txt', 'w')
+    f = open('test_movie_kmeans.txt', 'w')
     
     for i in range(0, n_users):
         for j in range(0, n_items):
@@ -215,7 +215,7 @@ def calculate_error(test, predicted_rating,cluster):
 
     print ("Mean Squared Error: %f" % mean_squared_error(y_true, y_pred))
 
-def test_model(predicted_rating,cluster):
+def test_model(predicted_rating, cluster):
     test_matrix = create_test_matrix()
     calculate_error(test_matrix, predicted_rating, cluster)
 
@@ -228,7 +228,7 @@ def main():
     update_avg_rating(user_rating, cluster)
     find_similarity_matrix()
     predicted_rating = predict_user_rating()
-    test_model(predicted_rating,cluster)
+    test_model(predicted_rating, cluster)
 
 # # %matplotlib inline%
 # import matplotlib.pyplot as plt
