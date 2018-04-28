@@ -13,16 +13,12 @@ with open('data/data_csv/book_crossings/BX-Book-Ratings.csv', 'r') as csvfile, o
 with open('data/data_csv/book_crossings/BX-Book-Explicit-Ratings.csv', 'r') as csvfile:
     reader = csv.DictReader(csvfile, fieldnames=fieldnames)
 
-    user_id, book_id = set(), set()
+    book_id = set()
 
     for row in reader:
-        user_id.add(row['User-ID'])
         book_id.add(row['ISBN'])
 
-user_id = list(user_id)
 book_id = list(book_id)
-
-print len(book_id)
 
 with open('data/data_csv/book_crossings/BX-Book-Explicit-Ratings.csv', 'r') as csvfile, open('data/data_csv/book_crossings/BX-Book-Explicit-Ratings-Updated.csv', 'w') as outputfile:
   
@@ -32,9 +28,7 @@ with open('data/data_csv/book_crossings/BX-Book-Explicit-Ratings.csv', 'r') as c
     for row in reader:
         
         if(row['User-ID'] != 'User-ID'):
-            
-            row['User-ID'] = user_id.index(row['User-ID'])
-            
+                      
             row['ISBN'] = book_id.index(row['ISBN'])
 
             writer.writerow({'User-ID': row['User-ID'], 'ISBN': row['ISBN'], 'Book-Rating': row['Book-Rating']})
